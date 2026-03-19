@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lead Gen Command Center | Taylor Dasch</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📞</text></svg>" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --midnight: #1e293b;
+      --deep: #0f172a;
+      --emerald: #059669;
+      --emerald-glow: #06d68a;
+      --snow: #f8fafc;
+      --light: #e2e8f0;
+      --slate: #64748b;
+      --dim: #334155;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --blue: #3b82f6;
+    }
+    body {
+      font-family: 'Georgia', 'Palatino Linotype', serif;
+      background: var(--deep);
+      color: var(--snow);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+    .sans { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; }
+
+    /* Header */
+    .header {
+      background: var(--midnight);
+      border-bottom: 2px solid var(--emerald);
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .logo { font-size: 18px; font-weight: 700; letter-spacing: -0.02em; }
+    .logo .accent { color: var(--emerald); }
+    .badge {
+      background: var(--emerald);
+      color: var(--deep);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 99px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .timer-header { font-size: 18px; font-weight: 700; color: var(--emerald-glow); font-variant-numeric: tabular-nums; }
+
+    /* Main */
+    .main { max-width: 720px; margin: 0 auto; padding: 24px 16px 80px; }
+
+    /* Cards */
+    .card {
+      background: var(--midnight);
+      border-radius: 12px;
+      border: 1px solid var(--dim);
+      padding: 24px;
+      margin-bottom: 16px;
+    }
+    .card-glow {
+      background: var(--midnight);
+      border-radius: 12px;
+      border: 1px solid rgba(5, 150, 105, 0.25);
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 0 30px rgba(5, 150, 105, 0.06);
+    }
+
+    /* Typography */
+    .h3 {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--emerald);
+      margin: 0 0 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .h3.sans { font-family: 'Trebuchet MS', sans-serif; }
+    .body {
+      font-size: 15px;
+      line-height: 1.65;
+      color: var(--light);
+      font-family: 'Trebuchet MS', sans-serif;
+      margin: 0;
+    }
+    .big-num {
+      font-size: 44px;
+      font-weight: 700;
+      color: var(--emerald-glow);
+      line-height: 1;
+      margin: 0;
+    }
+    .mid-num {
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--snow);
+      line-height: 1;
+      margin: 0;
+    }
+    .small-label {
+      font-size: 11px;
+      color: var(--slate);
+      font-family: 'Trebuchet MS', sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 4px 0 0;
+    }
+
+    /* Layout */
+    .stat-row { display: flex; gap: 16px; flex-wrap: wrap; }
+    .stat-box {
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+      padding: 12px 8px;
+      background: var(--deep);
+      border-radius: 8px;
+    }
+    .divider { height: 1px; background: rgba(51, 65, 85, 0.4); margin: 20px 0; border: none; }
+    .flex-center { display: flex; justify-content: center; align-items: center; }
+    .flex-between { display: flex; justify-content: space-between; align-items: center; }
+    .gap-8 { gap: 8px; }
+    .gap-10 { gap: 10px; }
+    .gap-12 { gap: 12px; }
+    .gap-24 { gap: 24px; }
+    .flex-wrap { flex-wrap: wrap; }
+    .text-center { text-align: center; }
+    .mb-6 { margin-bottom: 6px; }
+    .mb-12 { margin-bottom: 12px; }
+    .mb-16 { margin-bottom: 16px; }
+
+    /* Timer */
+    .timer-display {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--emerald-glow);
+      font-family: 'Georgia', serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* Buttons */
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 14px 28px;
+      font-size: 15px;
+      font-weight: 700;
+      font-family: 'Trebuchet MS', sans-serif;
+      cursor: pointer;
+      transition: all 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .btn:hover { transform: scale(1.02); }
+    .btn:active { transform: scale(0.98); }
+    .btn-emerald { background: var(--emerald); color: var(--deep); }
+    .btn-emerald:hover { background: var(--emerald-glow); }
+    .btn-red { background: var(--red); color: var(--snow); }
+    .btn-red:hover { background: #dc2626; }
+    .btn-dim { background: var(--dim); color: var(--snow); }
+    .btn-start { padding: 18px 48px; font-size: 17px; }
+
+    .btn-small {
+      border: none;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: 'Trebuchet MS', sans-serif;
+      cursor: pointer;
+      background: var(--dim);
+      color: var(--snow);
+      transition: all 0.1s;
+    }
+    .btn-small:hover { background: var(--slate); }
+
+    .btn-clear {
+      background: transparent;
+      border: none;
+      color: var(--red);
+      font-size: 11px;
+      font-weight: 600;
+      font-family: 'Trebuchet MS', sans-serif;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    /* Disposition Buttons */
+    .disp-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+    .disp-btn {
+      border-radius: 10px;
+      padding: 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      flex: 1;
+      min-width: 100px;
+      border: 1px solid transparent;
+    }
+    .disp-btn:hover { transform: translateY(-2px); }
+    .disp-btn .icon { font-size: 24px; }
+    .disp-btn .label {
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Trebuchet MS', sans-serif;
+      margin-top: 4px;
+    }
+
+    /* Inputs */
+    .input, .textarea {
+      width: 100%;
+      background: var(--deep);
+      border: 1px solid var(--dim);
+      border-radius: 8px;
+      padding: 10px 14px;
+      color: var(--snow);
+      font-size: 14px;
+      font-family: 'Trebuchet MS', sans-serif;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .input:focus, .textarea:focus { border-color: var(--emerald); }
+    .textarea { min-height: 80px; resize: vertical; }
+
+    /* Tags */
+    .tag {
+      background: transparent;
+      color: var(--light);
+      border: 1px solid var(--dim);
+      border-radius: 99px;
+      padding: 5px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      font-family: 'Trebuchet MS', sans-serif;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .tag.active {
+      background: var(--emerald);
+      color: var(--deep);
+      border-color: var(--emerald);
+    }
+
+    /* Feed Items */
+    .feed-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.2);
+      font-size: 13px;
+      font-family: 'Trebuchet MS', sans-serif;
+      color: var(--light);
+    }
+    .feed-item:last-child { border-bottom: none; }
+
+    /* Result Banners */
+    .banner {
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 12px;
+      text-align: center;
+      font-family: 'Trebuchet MS', sans-serif;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .banner-success { background: rgba(5, 150, 105, 0.12); border: 1px solid var(--emerald); color: var(--emerald-glow); }
+    .banner-error { background: rgba(239, 68, 68, 0.12); border: 1px solid var(--red); color: var(--red); }
+    .banner-info { background: rgba(59, 130, 246, 0.12); border: 1px solid var(--blue); color: var(--blue); }
+
+    /* Settings Row */
+    .settings-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+    .settings-row .label { min-width: 160px; font-size: 13px; }
+    .settings-row .value {
+      min-width: 60px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--snow);
+    }
+
+    /* Animations */
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    .fade-in { animation: fadeIn 0.3s ease; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.6; } }
+    .pulse { animation: pulse 1.5s infinite; }
+
+    /* Responsive */
+    @media (max-width: 500px) {
+      .big-num { font-size: 32px; }
+      .mid-num { font-size: 22px; }
+      .stat-box { min-width: 70px; padding: 8px 4px; }
+      .disp-btn { min-width: 80px; padding: 12px 8px; }
+      .timer-display { font-size: 26px; }
+      .header { padding: 12px 16px; }
+      .main { padding: 16px 12px 60px; }
+      .card, .card-glow { padding: 16px; }
+    }
+
+    /* Hidden utility */
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <span class="logo">LEAD GEN <span class="accent">COMMAND CENTER</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span class="badge hidden" id="session-badge">SESSION ACTIVE</span>
+      <span class="timer-header hidden" id="header-timer">0:00</span>
+    </div>
+  </div>
+
+  <div class="main" id="app">
+    <!-- Views rendered via JS -->
+  </div>
+
+  <script>
+    // ═══════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════
+    const RAILWAY_URL = "https://ai-real-estate-toolkit-production.up.railway.app/fub-lead";
+
+    const DISPOSITIONS = [
+      { id: "no_answer", label: "No Answer", icon: "\ud83d\udcf5", color: "#64748b" },
+      { id: "voicemail", label: "Left Voicemail", icon: "\ud83d\udce8", color: "#3b82f6" },
+      { id: "not_interested", label: "Not Interested", icon: "\ud83d\udeab", color: "#ef4444" },
+      { id: "callback", label: "Call Back Later", icon: "\ud83d\udd04", color: "#f59e0b" },
+      { id: "interested", label: "Interested", icon: "\ud83d\udd25", color: "#059669" },
+    ];
+
+    const TAG_OPTIONS = [
+      "Expired", "FSBO", "Farming Board", "Investor Lead", "Seller Lead",
+      "Buyer Lead", "BSW Relocation", "Fort Hood PCS", "Referral",
+    ];
+
+    let state = {
+      view: "briefing",
+      sessionActive: false,
+      sessionCalls: [],
+      allSessions: [],
+      mathConfig: { dialsPerAppointment: 80, appointmentCloseRate: 0.25, avgCommission: 6000 },
+      showSettings: false,
+      timer: 0,
+      timerRunning: false,
+      leadForm: { name: "", phone: "", email: "", notes: "", tags: [], source: "" },
+      submitting: false,
+      submitResult: null,
+    };
+
+    let timerInterval = null;
+
+    // ── Persistence ──
+    function loadState() {
+      try {
+        const s = localStorage.getItem("leadgen:sessions");
+        if (s) state.allSessions = JSON.parse(s);
+      } catch {}
+      try {
+        const m = localStorage.getItem("leadgen:math");
+        if (m) state.mathConfig = JSON.parse(m);
+      } catch {}
+    }
+
+    function saveSessions() {
+      try { localStorage.setItem("leadgen:sessions", JSON.stringify(state.allSessions)); } catch {}
+    }
+
+    function saveMath() {
+      try { localStorage.setItem("leadgen:math", JSON.stringify(state.mathConfig)); } catch {}
+    }
+
+    // ── Helpers ──
+    function formatTime(s) {
+      const m = Math.floor(s / 60);
+      const sec = s % 60;
+      return `${m}:${sec.toString().padStart(2, "0")}`;
+    }
+
+    function getDialValue() {
+      const mc = state.mathConfig;
+      return mc.avgCommission * mc.appointmentCloseRate / mc.dialsPerAppointment;
+    }
+
+    function getTotalDials() {
+      return state.allSessions.reduce((sum, s) => sum + s.calls.length, 0) + state.sessionCalls.length;
+    }
+
+    function getDialsToNextDeal() {
+      const mc = state.mathConfig;
+      const dialsPerDeal = Math.ceil(mc.dialsPerAppointment / mc.appointmentCloseRate);
+      return Math.max(0, dialsPerDeal - (getTotalDials() % dialsPerDeal));
+    }
+
+    function getContactRate(calls) {
+      if (calls.length === 0) return 0;
+      const contacted = calls.filter(c => ["not_interested", "callback", "interested"].includes(c.disposition)).length;
+      return ((contacted / calls.length) * 100).toFixed(0);
+    }
+
+    function getAllCalls() {
+      return [...state.allSessions.flatMap(s => s.calls), ...state.sessionCalls];
+    }
+
+    // ── Timer ──
+    function startTimer() {
+      state.timerRunning = true;
+      timerInterval = setInterval(() => {
+        state.timer++;
+        document.getElementById("header-timer").textContent = formatTime(state.timer);
+        const st = document.getElementById("session-timer");
+        if (st) st.textContent = formatTime(state.timer);
+      }, 1000);
+    }
+
+    function stopTimer() {
+      state.timerRunning = false;
+      clearInterval(timerInterval);
+    }
+
+    // ── Actions ──
+    function startSession() {
+      state.sessionActive = true;
+      state.sessionCalls = [];
+      state.timer = 0;
+      state.view = "session";
+      startTimer();
+      document.getElementById("session-badge").classList.remove("hidden");
+      document.getElementById("header-timer").classList.remove("hidden");
+      render();
+    }
+
+    function endSession() {
+      stopTimer();
+      state.sessionActive = false;
+      document.getElementById("session-badge").classList.add("hidden");
+      document.getElementById("header-timer").classList.add("hidden");
+      if (state.sessionCalls.length > 0) {
+        const session = {
+          id: Date.now(),
+          date: new Date().toISOString(),
+          duration: state.timer,
+          calls: state.sessionCalls,
+        };
+        state.allSessions.push(session);
+        saveSessions();
+      }
+      state.view = "briefing";
+      render();
+    }
+
+    function logCall(dispId) {
+      if (dispId === "interested") {
+        state.leadForm = { name: "", phone: "", email: "", notes: "", tags: [], source: "" };
+        state.submitResult = null;
+        state.view = "lead_form";
+        render();
+        return;
+      }
+      state.sessionCalls.push({
+        id: Date.now(),
+        disposition: dispId,
+        timestamp: new Date().toISOString(),
+      });
+      render();
+    }
+
+    async function submitLead() {
+      const lf = state.leadForm;
+      const call = {
+        id: Date.now(),
+        disposition: "interested",
+        timestamp: new Date().toISOString(),
+        lead: { ...lf },
+      };
+      state.sessionCalls.push(call);
+
+      if (lf.email || lf.phone) {
+        state.submitting = true;
+        render();
+        try {
+          const payload = {
+            person: {
+              firstName: lf.name.split(" ")[0] || "",
+              lastName: lf.name.split(" ").slice(1).join(" ") || "",
+              emails: lf.email ? [{ value: lf.email }] : [],
+              phones: lf.phone ? [{ value: lf.phone }] : [],
+              tags: lf.tags,
+              source: lf.source || "Outbound Prospecting",
+            },
+            note: {
+              body: `[Lead Gen Command Center] ${new Date().toLocaleDateString()}\nSource: ${lf.source || "Outbound"}\nDisposition: Interested\nNotes: ${lf.notes}`,
+            },
+          };
+          const res = await fetch(RAILWAY_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          state.submitResult = res.ok ? "success" : "error";
+        } catch {
+          state.submitResult = "error";
+        }
+        state.submitting = false;
+      } else {
+        state.submitResult = "saved";
+      }
+      render();
+      setTimeout(() => {
+        state.view = "session";
+        state.submitResult = null;
+        render();
+      }, 1500);
+    }
+
+    function skipLeadForm() {
+      state.sessionCalls.push({
+        id: Date.now(),
+        disposition: "interested",
+        timestamp: new Date().toISOString(),
+      });
+      state.view = "session";
+      render();
+    }
+
+    function toggleTag(tag) {
+      const idx = state.leadForm.tags.indexOf(tag);
+      if (idx > -1) state.leadForm.tags.splice(idx, 1);
+      else state.leadForm.tags.push(tag);
+      render();
+    }
+
+    function updateLeadField(field, value) {
+      state.leadForm[field] = value;
+    }
+
+    function clearHistory() {
+      if (confirm("Clear all session history? This cannot be undone.")) {
+        state.allSessions = [];
+        saveSessions();
+        render();
+      }
+    }
+
+    function toggleSettings() {
+      state.showSettings = !state.showSettings;
+      render();
+    }
+
+    function adjustMath(key, delta) {
+      state.mathConfig[key] = Math.max(key === "appointmentCloseRate" ? 0.05 : (key === "avgCommission" ? 500 : 5), state.mathConfig[key] + delta);
+      saveMath();
+      render();
+    }
+
+    // ═══════════════════════════════════════════════════
+    // RENDER
+    // ═══════════════════════════════════════════════════
+    function render() {
+      const app = document.getElementById("app");
+      if (state.view === "briefing") app.innerHTML = renderBriefing();
+      else if (state.view === "session") app.innerHTML = renderSession();
+      else if (state.view === "lead_form") app.innerHTML = renderLeadForm();
+    }
+
+    function renderBriefing() {
+      const dv = getDialValue();
+      const total = getTotalDials();
+      const toNext = getDialsToNextDeal();
+      const allTime = total * dv;
+      const allCalls = getAllCalls();
+      const totalLeads = allCalls.filter(c => c.lead?.email || c.lead?.phone).length;
+      const mc = state.mathConfig;
+
+      const dispStats = DISPOSITIONS.map(d => `<span style="color:${d.color};font-size:12px" class="sans">${d.icon} ${d.label}: ${allCalls.filter(c=>c.disposition===d.id).length}</span>`).join(" &nbsp; ");
+
+      const recentSessions = state.allSessions.slice(-5).reverse().map(s =>
+        `<div class="feed-item">
+          <span style="color:var(--slate);min-width:80px">${new Date(s.date).toLocaleDateString()}</span>
+          <span style="color:var(--snow);font-weight:600">${s.calls.length} dials</span>
+          <span style="color:var(--slate)">${formatTime(s.duration)}</span>
+          <span style="color:var(--emerald);font-weight:600;margin-left:auto">$${(s.calls.length * dv).toFixed(0)}</span>
+        </div>`
+      ).join("");
+
+      const settingsHTML = state.showSettings ? `
+        <div style="margin-top:16px" class="fade-in">
+          <p class="body" style="font-size:12px;margin-bottom:12px">Tune these as you track real data. More sessions = more accurate math.</p>
+          <div class="settings-row">
+            <span class="body label">Dials per Appointment</span>
+            <button class="btn-small" onclick="adjustMath('dialsPerAppointment',-5)">-</button>
+            <span class="body value">${mc.dialsPerAppointment}</span>
+            <button class="btn-small" onclick="adjustMath('dialsPerAppointment',5)">+</button>
+          </div>
+          <div class="settings-row">
+            <span class="body label">Close Rate</span>
+            <button class="btn-small" onclick="adjustMath('appointmentCloseRate',-0.05)">-</button>
+            <span class="body value">${(mc.appointmentCloseRate*100).toFixed(0)}%</span>
+            <button class="btn-small" onclick="adjustMath('appointmentCloseRate',0.05)">+</button>
+          </div>
+          <div class="settings-row">
+            <span class="body label">Avg Commission ($)</span>
+            <button class="btn-small" onclick="adjustMath('avgCommission',-500)">-</button>
+            <span class="body value">$${mc.avgCommission.toLocaleString()}</span>
+            <button class="btn-small" onclick="adjustMath('avgCommission',500)">+</button>
+          </div>
+        </div>` : "";
+
+      return `
+        <div class="card-glow fade-in">
+          <p class="h3 sans">YOUR DIAL MATH</p>
+          <p class="body mb-16">Every single dial you make is worth money. Not metaphorically. Mathematically. Here is the math, built from real numbers:</p>
+          <div class="stat-row mb-16">
+            <div class="stat-box"><p class="big-num">$${dv.toFixed(2)}</p><p class="small-label">Per Dial</p></div>
+            <div class="stat-box"><p class="mid-num">${mc.dialsPerAppointment}</p><p class="small-label">Dials / Appt</p></div>
+            <div class="stat-box"><p class="mid-num">${(mc.appointmentCloseRate*100).toFixed(0)}%</p><p class="small-label">Close Rate</p></div>
+            <div class="stat-box"><p class="mid-num">$${mc.avgCommission.toLocaleString()}</p><p class="small-label">Avg Commission</p></div>
+          </div>
+          <hr class="divider">
+          <p class="body mb-6"><strong style="color:var(--snow)">10 dials today = $${(dv*10).toFixed(2)} earned.</strong> You do not see the check today. But the math does not lie. Every expired homeowner you call either becomes a listing, a referral, or data that sharpens your next call. None of it is wasted.</p>
+          <p class="body mb-6"><strong style="color:var(--emerald-glow)">You are ${toNext} dials away from your next closed deal.</strong> That is not a guess. That is your conversion rate applied to your dial count. Every call you make today shrinks that number.</p>
+          <p class="body">The agents making $200K+ are not smarter than you. They are not better on the phone. They just make more dials. The math is the same for everyone. You are choosing to do what most agents refuse to do. That is why it works.</p>
+        </div>
+
+        <div class="card fade-in">
+          <p class="h3 sans">ALL-TIME STATS</p>
+          <div class="stat-row">
+            <div class="stat-box"><p class="mid-num">${total}</p><p class="small-label">Total Dials</p></div>
+            <div class="stat-box"><p class="mid-num" style="color:var(--emerald-glow)">$${allTime.toFixed(0)}</p><p class="small-label">Value Generated</p></div>
+            <div class="stat-box"><p class="mid-num">${totalLeads}</p><p class="small-label">Leads to FUB</p></div>
+            <div class="stat-box"><p class="mid-num">${state.allSessions.length}</p><p class="small-label">Sessions</p></div>
+          </div>
+          ${total > 0 ? `<hr class="divider"><div style="display:flex;gap:8px;flex-wrap:wrap">${dispStats}</div>` : ""}
+        </div>
+
+        <div class="text-center" style="padding:8px 0 24px">
+          <button class="btn btn-emerald btn-start" onclick="startSession()">START SESSION</button>
+          <p class="small-label" style="margin-top:10px">30 MINUTES. 10 DIALS. LET'S GO.</p>
+        </div>
+
+        <div class="card">
+          <div class="flex-between" style="cursor:pointer" onclick="toggleSettings()">
+            <p class="h3 sans" style="margin:0">DIAL MATH SETTINGS</p>
+            <span style="color:var(--slate);font-size:12px;font-family:'Trebuchet MS',sans-serif">${state.showSettings ? "HIDE" : "EDIT"}</span>
+          </div>
+          ${settingsHTML}
+        </div>
+
+        ${state.allSessions.length > 0 ? `
+        <div class="card">
+          <div class="flex-between">
+            <p class="h3 sans">RECENT SESSIONS</p>
+            <button class="btn-clear" onclick="clearHistory()">Clear All</button>
+          </div>
+          ${recentSessions}
+        </div>` : ""}
+      `;
+    }
+
+    function renderSession() {
+      const dv = getDialValue();
+      const sv = state.sessionCalls.length * dv;
+      const toNext = getDialsToNextDeal();
+      const cr = getContactRate(state.sessionCalls);
+
+      const dispButtons = DISPOSITIONS.map(d => `
+        <div class="disp-btn" style="background:${d.color}18;border-color:${d.color}40" onclick="logCall('${d.id}')"
+          onmouseenter="this.style.background='${d.color}30';this.style.borderColor='${d.color}'"
+          onmouseleave="this.style.background='${d.color}18';this.style.borderColor='${d.color}40'">
+          <div class="icon">${d.icon}</div>
+          <div class="label" style="color:${d.color}">${d.label}</div>
+        </div>
+      `).join("");
+
+      const sessionStats = DISPOSITIONS.map(d => {
+        const count = state.sessionCalls.filter(c => c.disposition === d.id).length;
+        return `<div class="stat-box"><p class="mid-num" style="font-size:22px;color:${d.color}">${count}</p><p class="small-label">${d.label}</p></div>`;
+      }).join("");
+
+      const callFeed = [...state.sessionCalls].reverse().slice(0, 20).map(c => {
+        const disp = DISPOSITIONS.find(d => d.id === c.disposition);
+        return `<div class="feed-item">
+          <span style="font-size:16px">${disp?.icon}</span>
+          <span style="color:${disp?.color};font-weight:600;font-size:12px">${disp?.label}</span>
+          ${c.lead?.name ? `<span style="color:var(--snow);font-size:12px">${c.lead.name}</span>` : ""}
+          <span style="color:var(--slate);font-size:11px;margin-left:auto">${new Date(c.timestamp).toLocaleTimeString([], {hour:"2-digit",minute:"2-digit"})}</span>
+        </div>`;
+      }).join("");
+
+      const interested = state.sessionCalls.filter(c => c.disposition === "interested").length;
+
+      return `
+        <div class="card-glow fade-in text-center">
+          <div style="display:flex;justify-content:center;align-items:center;gap:24px;margin-bottom:12px;flex-wrap:wrap">
+            <div><p class="timer-display" id="session-timer">${formatTime(state.timer)}</p><p class="small-label">SESSION TIME</p></div>
+            <div style="width:1px;height:40px;background:var(--dim)"></div>
+            <div><p class="big-num" style="font-size:36px">${state.sessionCalls.length}</p><p class="small-label">DIALS</p></div>
+            <div style="width:1px;height:40px;background:var(--dim)"></div>
+            <div><p class="big-num" style="font-size:36px">$${sv.toFixed(0)}</p><p class="small-label">VALUE</p></div>
+          </div>
+          <p class="body" style="font-size:13px;color:var(--emerald-glow)">Every dial: $${dv.toFixed(2)} earned. ${toNext} dials to next deal.</p>
+        </div>
+
+        <div class="card fade-in">
+          <p class="h3 sans">LOG CALL RESULT</p>
+          <div class="disp-grid">${dispButtons}</div>
+        </div>
+
+        <div class="card fade-in">
+          <p class="h3 sans">SESSION BREAKDOWN</p>
+          <div class="stat-row">${sessionStats}</div>
+          <hr class="divider">
+          <div class="flex-between">
+            <span class="body" style="font-size:13px">Contact Rate: <strong style="color:var(--snow)">${cr}%</strong></span>
+            <span class="body" style="font-size:13px">Interested: <strong style="color:var(--emerald)">${interested}</strong></span>
+          </div>
+        </div>
+
+        ${state.sessionCalls.length > 0 ? `
+        <div class="card fade-in">
+          <p class="h3 sans">CALL LOG</p>
+          ${callFeed}
+        </div>` : ""}
+
+        <div class="text-center" style="padding:12px 0">
+          <button class="btn btn-red" onclick="endSession()">END SESSION</button>
+        </div>
+      `;
+    }
+
+    function renderLeadForm() {
+      const tagsHTML = TAG_OPTIONS.map(tag =>
+        `<button class="tag ${state.leadForm.tags.includes(tag) ? 'active' : ''}" onclick="toggleTag('${tag}')">${tag}</button>`
+      ).join("");
+
+      let bannerHTML = "";
+      if (state.submitResult === "success") bannerHTML = `<div class="banner banner-success fade-in">\u2705 Pushed to Follow Up Boss</div>`;
+      else if (state.submitResult === "error") bannerHTML = `<div class="banner banner-error fade-in">\u26a0\ufe0f FUB push failed \u2014 lead saved locally. Add manually.</div>`;
+      else if (state.submitResult === "saved") bannerHTML = `<div class="banner banner-info fade-in">\ud83d\udcbe Logged \u2014 no email/phone for FUB push</div>`;
+
+      return `
+        <div class="card-glow fade-in">
+          <p style="font-size:20px;font-weight:700;color:var(--emerald-glow);margin:0 0 4px">\ud83d\udd25 INTERESTED LEAD</p>
+          <p class="body mb-16">Capture their info below. If you enter an email or phone, it pushes directly to Follow Up Boss with the tags you select.</p>
+
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div>
+              <p class="small-label" style="margin-bottom:4px">NAME</p>
+              <input class="input" placeholder="First Last" oninput="updateLeadField('name',this.value)" value="${state.leadForm.name}" />
+            </div>
+            <div style="display:flex;gap:12px">
+              <div style="flex:1">
+                <p class="small-label" style="margin-bottom:4px">PHONE</p>
+                <input class="input" placeholder="254-555-1234" oninput="updateLeadField('phone',this.value)" value="${state.leadForm.phone}" />
+              </div>
+              <div style="flex:1">
+                <p class="small-label" style="margin-bottom:4px">EMAIL</p>
+                <input class="input" placeholder="lead@email.com" oninput="updateLeadField('email',this.value)" value="${state.leadForm.email}" />
+              </div>
+            </div>
+            <div>
+              <p class="small-label" style="margin-bottom:4px">SOURCE</p>
+              <input class="input" placeholder="Expired, FSBO, Farming Board..." oninput="updateLeadField('source',this.value)" value="${state.leadForm.source}" />
+            </div>
+            <div>
+              <p class="small-label" style="margin-bottom:6px">TAGS (for FUB)</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px">${tagsHTML}</div>
+            </div>
+            <div>
+              <p class="small-label" style="margin-bottom:4px">NOTES</p>
+              <textarea class="textarea" placeholder="What did they say? Motivation? Timeline? Property details?" oninput="updateLeadField('notes',this.value)">${state.leadForm.notes}</textarea>
+            </div>
+          </div>
+
+          <hr class="divider">
+          ${bannerHTML}
+
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-emerald" style="flex:1;${state.submitting ? 'opacity:0.6;pointer-events:none' : ''}" onclick="submitLead()">
+              ${state.submitting ? "SENDING..." : (state.leadForm.email || state.leadForm.phone) ? "SAVE & PUSH TO FUB" : "SAVE LEAD"}
+            </button>
+            <button class="btn btn-dim" onclick="skipLeadForm()">SKIP</button>
+          </div>
+        </div>
+      `;
+    }
+
+    // ── Init ──
+    loadState();
+    render();
+  </script>
+</body>
+</html>
